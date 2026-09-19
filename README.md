@@ -1,16 +1,125 @@
-# LABDESENV
+# Sistema de Matrículas Universitárias
 
-- Desenvolvimento de um Sistema de Matriculas para uma Universidade,atividade proposta pelo professor Glendar Bras,na materia de Laboratorio de desenvolvimento de projeto de software
+Projeto desenvolvido para a disciplina de **Laboratório de Desenvolvimento de Software** do curso de Engenharia de Software da PUC Minas.
 
-## SPRINT 1
+O sistema informatiza o processo de matrícula semestral de uma universidade, conectando alunos, professores, secretaria e o sistema de cobrança.
 
-- Modelo de Analise: Requisitos Funcionais e nao-funcionaois, + Diagrama de Caso de Uso referenteao sistema + Descricao em Historias de Usuario em Markdown (.md), no README do Repositorio,com URL enviado no Canvas. (4 pontos)
+---
+## 1. Requisitos do sistema
 
-## SPRINT 2
+### 1.1 Requisitos funcionais (RF):
+- **RF-001:** O usuário autentica no sistema
+- **RF-002:** A secretaria gera currículo
+- **RF-003:** A secretaria visualiza as disciplinas
+- **RF-004:** A secretaria visualiza os professores
+- **RF-005:** A secretaria visualiza os alunos
+- **RF-006:** O aluno efetua matrícula
+- **RF-007:** O aluno cancela matrícula
+- **RF-008:** O professor consulta os alunos cadastrados em cada disciplina
+- **RF-009:** O sistema de matrículas deve enviar uma notificação ao sistema de cobranças informando as inscrições de um aluno
 
-- Correcão dos Diagramas desenvolvidos + Projeto Estrutural: Diagrama de Classes referente ao sistem + Criacão do Projeto Java, contendo: classes, atributos e stub dos m´etodos modelados (4 pontos);
+### 1.2 Requisitos não funcionais (RNF):
+- **RFN-001:** O sistema deve ser desenvolvido utilizando a linguagem de programação Java.
+- **RFN-002:** O software deve possuir um mecanismo de persistência de dados.
 
-## Sprint 3
+Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistema-matricula-requisitos.pdf).
+---
+## 2. Histórias de Usuário (User Stories)
 
-- Correcão dos Diagramas desenvolvidos + Implementacão do prototipo do sistema (principais funcionalidades usaveis, com interface e persistencia) (7 pontos). Observação: a interface pode ser em linha
-de comando e a persistencia em arquivos.;
+
+### 2.1 Histórias de Usuário - Aluno
+
+**USER STORY 01**
+
+* **Como um** aluno
+* **eu quero** efetuar minha matrícula no sistema
+* **para que** eu possa garantir minha vaga e participar das disciplinas do semestre.
+
+**USER STORY 02**
+
+* **Como um** aluno
+* **eu quero** cancelar minha matrícula
+* **para que** eu possa desistir da disciplina dentro do prazo permitido sem gerar pendências.
+
+---
+
+### 2.2 Histórias de Usuário - Secretaria
+
+**USER STORY 03**
+
+* **Como um** usuário da secretaria
+* **eu quero** gerenciar os cadastros de alunos (incluir, alterar, consultar e remover)
+* **para que** os dados acadêmicos dos estudantes estejam sempre atualizados.
+
+**USER STORY 04**
+
+* **Como um** usuário da secretaria
+* **eu quero** gerenciar os cadastros de professores (incluir, alterar, consultar e remover)
+* **para que** a alocação docente fique devidamente registrada no sistema.
+
+**USER STORY 05**
+
+* **Como um** usuário da secretaria
+* **eu quero** gerar o currículo acadêmico
+* **para que** a grade curricular do curso seja disponibilizada e atualizada para os alunos.
+
+---
+
+### 2.3 Histórias de Usuário - Professor
+
+**USER STORY 06**
+
+* **Como um** professor
+* **eu quero** consultar a lista de alunos cadastrados em minhas turmas
+* **para que** eu possa realizar o acompanhamento de presença e notas.
+---
+
+### 2.4 Histórias de Usuário Transversais (Usuário Geral / Sistema)
+
+**USER STORY 07**
+
+* **Como um** usuário do sistema (aluno, professor ou secretaria)
+* **eu quero** me autenticar no sistema com login e senha
+* **para que** eu tenha acesso seguro às funcionalidades específicas do meu perfil.
+
+**USER STORY 08**
+
+* **Como um** usuário do sistema
+* **eu quero** que o sistema envie uma notificação ao Sistema de Cobrança ao efetuar ou alterar matrículas
+* **para que** a emissão de boletos e o controle financeiro ocorram de forma automática.
+  
+---
+## 3. Modelagem e Diagramas UML
+
+### 3.1 Diagrama de Casos de Uso
+Veja o [diagrama de casos de uso](docs/diagrama-casos-de-uso.pdf) referente ao sistema.
+
+### 3.2 Diagrama de Classes
+Clique no link para ver o [diagrama de classes](./) do sistema.
+
+---
+
+## 🛠️ Tecnologias e Modelagem
+
+* **Linguagem:** Java
+* **Interface:** Linha de Comando (CLI)
+* **Persistência:** Manipulação e gravação em arquivos
+* **Modelagem de Software:** Diagramas de Casos de Uso, Histórias de Usuário e Diagramas de Classes (UML)
+
+---
+
+## 📂 Estrutura do Repositório
+
+```text
+├── docs/                 # Modelos UML, diagramas e histórias de usuário
+├── src/                  # Código-fonte da aplicação Java
+└── README.md             # Documentação principal
+```
+
+---
+
+## 👥 Autores
+
+* Caio César Falinacio dos Santos
+* Luiz Fernando Cunha Maia
+* Pedro Henrique Nogueira
