@@ -9,20 +9,22 @@ O sistema informatiza o processo de matrícula semestral de uma universidade, co
 
 ### 1.1 Requisitos funcionais (RF):
 - **RF-001:** O usuário autentica no sistema
-- **RF-002:** A secretaria gera currículo
-- **RF-003:** A secretaria visualiza as disciplinas
-- **RF-004:** A secretaria visualiza os professores
-- **RF-005:** A secretaria visualiza os alunos
-- **RF-006:** O aluno efetua matrícula
-- **RF-007:** O aluno cancela matrícula
-- **RF-008:** O professor consulta os alunos cadastrados em cada disciplina
-- **RF-009:** O sistema de matrículas deve enviar uma notificação ao sistema de cobranças informando as inscrições de um aluno
+- **RF-002:** A secretaria mantém o histórico de disciplinas cursadas dos alunos
+- **RF-003:** A secretaria gera currículo
+- **RF-004:** A secretaria mantém as disciplinas
+- **RF-005:** A secretaria mantém os professores
+- **RF-006:** A secretaria mantém os alunos
+- **RF-007:** O aluno ativo efetua matrícula
+- **RF-008:** O aluno ativo cancela matrícula
+- **RF-009:** O aluno ativo tranca a matrícula
+- **RF-010:** O professor consulta os alunos cadastrados em cada disciplina
+- **RF-011:** O sistema de matrículas deve enviar uma notificação ao sistema de cobranças informando as inscrições de um aluno
 
 ### 1.2 Requisitos não funcionais (RNF):
 - **RFN-001:** O sistema deve ser desenvolvido utilizando a linguagem de programação Java.
 - **RFN-002:** O software deve possuir um mecanismo de persistência de dados.
 
-Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistema-matricula-requisitos.pdf).
+Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistema-matricula-requisitos-v2.pdf).
 ---
 ## 2. Histórias de Usuário (User Stories)
 
