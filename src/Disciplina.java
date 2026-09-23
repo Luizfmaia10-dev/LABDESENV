@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 public final class Disciplina {
     private final Curso curso;
     private final Secretaria secretaria;
