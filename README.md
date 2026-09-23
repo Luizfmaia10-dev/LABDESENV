@@ -94,10 +94,10 @@ Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistem
 ## 3. Modelagem e Diagramas UML
 
 ### 3.1 Diagrama de Casos de Uso
-Veja o [diagrama de casos de uso](docs/diagrama-casos-de-uso.pdf) referente ao sistema.
+Veja o [diagrama de casos de uso](docs/diagrama-casos-de-uso-v2.pdf) referente ao sistema.
 
 ### 3.2 Diagrama de Classes
-Clique no link para ver o [diagrama de classes](./) do sistema.
+Clique no link para ver o [diagrama de classes](.docs/diagrama-de-classe) do sistema.
 
 ---
 
