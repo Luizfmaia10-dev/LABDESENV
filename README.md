@@ -97,7 +97,7 @@ Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistem
 Veja o [diagrama de casos de uso](docs/diagrama-casos-de-uso-v2.pdf) referente ao sistema.
 
 ### 3.2 Diagrama de Classes
-Clique no link para ver o [diagrama de classes](.docs/diagrama-de-classe) do sistema.
+Clique no link para ver o [diagrama de classes](.docs/diagrama-de-classe.pdf) do sistema.
 
 ---
 
