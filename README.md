@@ -24,7 +24,7 @@ O sistema informatiza o processo de matrícula semestral de uma universidade, co
 - **RFN-001:** O sistema deve ser desenvolvido utilizando a linguagem de programação Java.
 - **RFN-002:** O software deve possuir um mecanismo de persistência de dados.
 
-Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistema-matricula-requisitos-v2.pdf).
+Veja o [documento com requisitos do sistema e as regras de negócio](docs/Requisitos/sistema-matricula-requisitos-v2.pdf).
 ---
 ## 2. Histórias de Usuário (User Stories)
 
@@ -94,10 +94,10 @@ Veja o [documento com requisitos do sistema e as regras de negócio](docs/sistem
 ## 3. Modelagem e Diagramas UML
 
 ### 3.1 Diagrama de Casos de Uso
-Veja o [diagrama de casos de uso](docs/diagrama-casos-de-uso-v2.pdf) referente ao sistema.
+Veja o [diagrama de casos de uso](docs/CasosDeUso/diagrama-casos-de-uso-v2.pdf) referente ao sistema.
 
 ### 3.2 Diagrama de Classes
-Clique no link para ver o [diagrama de classes](.docs/diagrama-de-classe.pdf) do sistema.
+Clique no link para ver o [diagrama de classes](docs/DiagramaDeClasse/class-diagram-v2.pdf) do sistema.
 
 ---
 
