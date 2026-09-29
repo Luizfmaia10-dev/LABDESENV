@@ -10,6 +10,23 @@ public final class Inscricao {
     private final Turma turma;
     private final ServicoCobranca servicoCobranca;
 
+    /**
+     * Construtor de reconstrucao — uso exclusivo da camada de persistencia (Subsistema 6).
+     * Nao dispara validacoes de dominio nem notificacoes ao servico de cobranca.
+     * Registra os vinculos bidirecionais sem re-validar restricoes de periodo ou capacidade.
+     */
+    Inscricao(TipoInscricao tipoInscricao, LocalDate dataHora, boolean isAtiva,
+              Aluno aluno, Turma turma) {
+        this.tipoInscricao = Objects.requireNonNull(tipoInscricao);
+        this.dataHora = Objects.requireNonNull(dataHora);
+        this.aluno = Objects.requireNonNull(aluno, "Aluno obrigatorio");
+        this.turma = Objects.requireNonNull(turma, "Turma obrigatoria");
+        this.servicoCobranca = null;
+        this.isAtiva = isAtiva;
+        aluno.registrarInscricao(this);
+        turma.registrarInscricao(this);
+    }
+
     public Inscricao(TipoInscricao tipoInscricao, LocalDate dataHora, Aluno aluno,
                      Turma turma, ServicoCobranca servicoCobranca) {
         this.tipoInscricao = Objects.requireNonNull(tipoInscricao);

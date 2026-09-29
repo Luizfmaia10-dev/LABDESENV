@@ -23,6 +23,18 @@ public final class Aluno extends Usuario {
         secretaria.registrarAluno(this);
     }
 
+    /** Construtor de reconstrucao — uso exclusivo da camada de persistencia (Subsistema 6). */
+    Aluno(String matricula, StatusMatricula status, Curso curso, Secretaria secretaria,
+          String emailCorporativo, String senhaHash, Endereco endereco, boolean reconstrucao) {
+        super(emailCorporativo, senhaHash, validarDados(matricula, status, curso, secretaria, endereco), true);
+        this.matricula = Objects.requireNonNull(matricula);
+        this.status = Objects.requireNonNull(status);
+        this.curso = Objects.requireNonNull(curso, "Curso obrigatorio");
+        this.secretaria = Objects.requireNonNull(secretaria, "Secretaria obrigatoria");
+        curso.registrarAluno(this);
+        secretaria.registrarAluno(this);
+    }
+
     private static Endereco validarDados(String matricula, StatusMatricula status, Curso curso, Secretaria secretaria, Endereco endereco) {
         Objects.requireNonNull(matricula, "matricula obrigatorio");
         Objects.requireNonNull(status, "status obrigatorio");

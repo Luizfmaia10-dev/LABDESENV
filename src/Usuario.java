@@ -16,6 +16,21 @@ public abstract class Usuario extends Pessoa {
         this.senha = resumo(senha);
     }
 
+    /**
+     * Construtor de reconstrucao — uso exclusivo da camada de persistencia (Subsistema 6).
+     * Recebe o hash da senha diretamente (ja foi hasheado em sessao anterior) em vez
+     * de re-hashear com o novo UUID, o que geraria um hash diferente do gravado.
+     */
+    protected Usuario(String emailCorporativo, String senhaHashPronta, Endereco endereco,
+                      boolean reconstrucao) {
+        super(validarCadastro(emailCorporativo, senhaHashPronta, endereco));
+        this.emailCorporativo = emailCorporativo;
+        this.senha = senhaHashPronta; // ja e um hash, nao hashear novamente
+    }
+
+    /** Acesso ao hash da senha para serializacao. Uso exclusivo da camada de persistencia. */
+    String getSenhaHash() { return senha; }
+
     private static Endereco validarCadastro(String email, String senha, Endereco endereco) {
         if (email == null || email.isBlank() || senha == null || senha.isBlank()) {
             throw new IllegalArgumentException("Email e senha obrigatorios");

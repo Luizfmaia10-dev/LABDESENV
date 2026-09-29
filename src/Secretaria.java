@@ -17,6 +17,13 @@ public final class Secretaria extends Usuario {
         this.cargo = Objects.requireNonNull(cargo);
     }
 
+    /** Construtor de reconstrucao — uso exclusivo da camada de persistencia (Subsistema 6). */
+    Secretaria(String cargo, String emailCorporativo, String senhaHash, Endereco endereco,
+               boolean reconstrucao) {
+        super(emailCorporativo, senhaHash, validarDados(cargo, endereco), true);
+        this.cargo = Objects.requireNonNull(cargo);
+    }
+
     private static Endereco validarDados(String cargo, Endereco endereco) {
         Objects.requireNonNull(cargo, "cargo obrigatorio");
         return endereco;

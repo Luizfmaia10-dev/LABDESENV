@@ -30,6 +30,26 @@ public final class Turma {
         professor.registrarTurma(this);
     }
 
+    /**
+     * Construtor de reconstrucao — uso exclusivo da camada de persistencia (Subsistema 6).
+     * Nao valida se o periodo de matricula esta aberto, pois a turma pode pertencer
+     * a um semestre ja encerrado que esta sendo recarregado do arquivo.
+     */
+    Turma(int limiteMaximo, int limiteMinimo, boolean isAtiva, String codigo,
+          Disciplina disciplina, Professor professor, Curriculo curriculo,
+          boolean reconstrucao) {
+        validarLimites(limiteMinimo, limiteMaximo);
+        this.disciplina = Objects.requireNonNull(disciplina, "Disciplina obrigatoria");
+        this.professor = Objects.requireNonNull(professor, "Professor obrigatorio");
+        this.curriculo = Objects.requireNonNull(curriculo, "Curriculo obrigatorio");
+        this.codigo = Objects.requireNonNull(codigo);
+        this.limiteMaximo = limiteMaximo;
+        this.limiteMinimo = limiteMinimo;
+        this.isAtiva = isAtiva;
+        disciplina.registrarTurma(this);
+        professor.registrarTurma(this);
+    }
+
     private static void validarLimites(int minimo, int maximo) {
         if (minimo < 3 || maximo > 60 || minimo > maximo) {
             throw new IllegalArgumentException("Limites devem respeitar 3 <= minimo <= maximo <= 60");
