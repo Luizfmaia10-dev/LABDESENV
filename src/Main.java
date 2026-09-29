@@ -1,18 +1,8 @@
+import domain.*;
+import cli.*;
 import java.util.Scanner;
 
-/**
- * Ponto de entrada da aplicacao.
- *
- * Fluxo:
- *  1. Carrega todos os dados do disco (GerenciadorDados)
- *  2. Se nenhuma secretaria estiver cadastrada (primeira execucao), abre o
- *     assistente de configuracao inicial para criar a primeira conta.
- *  3. Exibe tela de login e autentica o usuario
- *  4. Detecta o perfil (Aluno / Professor / Secretaria) e abre o menu correspondente
- *  5. Ao sair, persiste todos os dados de volta no disco
- */
 public final class Main {
-
     public static void main(String[] args) {
         GerenciadorDados dados = new GerenciadorDados();
         dados.carregar();
@@ -22,7 +12,6 @@ public final class Main {
         System.out.println("  Sistema de Matriculas Universitarias  ");
         System.out.println("==========================================");
 
-        // Primeira execucao: nenhuma secretaria cadastrada
         if (dados.getSecretarias().isEmpty()) {
             primeiraExecucao(dados, sc);
         }
@@ -46,24 +35,17 @@ public final class Main {
         sc.close();
     }
 
-    // -------------------------------------------------------------------------
-    // Assistente de primeira execucao
-    // -------------------------------------------------------------------------
-
     private static void primeiraExecucao(GerenciadorDados dados, Scanner sc) {
         System.out.println("\n*** PRIMEIRA EXECUCAO ***");
         System.out.println("Nenhum dado encontrado. Vamos configurar a conta da Secretaria.");
-        System.out.println("A Secretaria podera cadastrar professores, alunos e disciplinas depois.\n");
-
+        
         Secretaria sec = null;
         while (sec == null) {
             try {
                 System.out.print("Cargo da secretaria (ex: Atendimento Geral): ");
                 String cargo = sc.nextLine().trim();
-
                 System.out.print("Email corporativo: ");
                 String email = sc.nextLine().trim();
-
                 System.out.print("Senha: ");
                 String senha = sc.nextLine().trim();
 
@@ -79,20 +61,12 @@ public final class Main {
                 sec = new Secretaria(cargo, email, senha, end);
                 dados.getSecretarias().add(sec);
                 dados.salvar();
-
-                System.out.println("\nConta da Secretaria criada com sucesso!");
-                System.out.println("Use o email '" + email + "' para fazer login.");
-                System.out.println("------------------------------------------");
-
-            } catch (IllegalArgumentException | NullPointerException e) {
+                System.out.println("\nConta criada com sucesso!");
+            } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage() + " — tente novamente.\n");
             }
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Autenticacao
-    // -------------------------------------------------------------------------
 
     private static void autenticar(GerenciadorDados dados, Scanner sc) {
         System.out.print("Email: ");
@@ -102,19 +76,25 @@ public final class Main {
 
         Aluno aluno = dados.buscarAlunoPorEmail(email);
         if (aluno != null && aluno.autenticar(email, senha)) {
-            new MenuAluno(aluno, dados, sc).exibir();
+            Contexto ctx = new Contexto(dados);
+            ctx.alunoAtivo = aluno;
+            new PortalAluno(ctx).executar();
             return;
         }
 
         Professor prof = dados.buscarProfessorPorEmail(email);
         if (prof != null && prof.autenticar(email, senha)) {
-            new MenuProfessor(prof, dados, sc).exibir();
+            Contexto ctx = new Contexto(dados);
+            ctx.professorAtivo = prof;
+            new PortalProfessor(ctx).executar();
             return;
         }
 
         Secretaria sec = dados.buscarSecretariaPorEmail(email);
         if (sec != null && sec.autenticar(email, senha)) {
-            new MenuSecretaria(sec, dados, sc).exibir();
+            Contexto ctx = new Contexto(dados);
+            ctx.secretariaAtiva = sec;
+            new MenuPrincipal(ctx).executar();
             return;
         }
 

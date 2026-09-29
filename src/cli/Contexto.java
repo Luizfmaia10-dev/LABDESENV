@@ -1,41 +1,35 @@
-import java.util.ArrayList;
+package cli;
+import domain.*;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Estado compartilhado da sessão CLI.
- * Centraliza os dados em memória e os utilitários de leitura de entrada.
- * Uma Secretaria padrão é inicializada automaticamente.
- */
 public class Contexto {
 
     public final Scanner scanner = new Scanner(System.in);
+    public final GerenciadorDados dados;
 
-    // Coleções em memória da sessão
-    public final List<Curso>       cursos       = new ArrayList<>();
-    public final List<Aluno>       alunos       = new ArrayList<>();
-    public final List<Professor>   professores  = new ArrayList<>();
-    public final List<Disciplina>  disciplinas  = new ArrayList<>();
-    public final List<Curriculo>   curriculos   = new ArrayList<>();
-    public final List<Turma>       turmas       = new ArrayList<>();
-    public final ServicoCobranca   servicoCobranca = new ServicoCobranca();
+    public final List<Curso>       cursos;
+    public final List<Aluno>       alunos;
+    public final List<Professor>   professores;
+    public final List<Disciplina>  disciplinas;
+    public final List<Curriculo>   curriculos;
+    public final List<Turma>       turmas;
+    public final ServicoCobranca   servicoCobranca;
 
-    /** Secretaria padrão inicializada ao abrir a aplicação. */
-    public final Secretaria secretariaAtiva;
+    public Secretaria secretariaAtiva;
+    public Professor professorAtivo;
+    public Aluno alunoAtivo;
 
-    public Contexto() {
-        Endereco end = new Endereco(
-                "Avenida Principal", "1",
-                "Belo Horizonte", "Centro",
-                "30000-000", "Bloco Administrativo");
-        secretariaAtiva = new Secretaria(
-                "Secretaria Geral",
-                "secretaria@universidade.br",
-                "admin123",
-                end);
+    public Contexto(GerenciadorDados dados) {
+        this.dados = dados;
+        this.cursos = dados.getCursos();
+        this.alunos = dados.getAlunos();
+        this.professores = dados.getProfessores();
+        this.disciplinas = dados.getDisciplinas();
+        this.curriculos = dados.getCurriculos();
+        this.turmas = dados.getTurmas();
+        this.servicoCobranca = dados.getServicoCobranca();
     }
-
-    // ─── Helpers de leitura ───────────────────────────────────────────────────
 
     public String lerLinha(String prompt) {
         System.out.print(prompt);
@@ -46,11 +40,8 @@ public class Contexto {
         while (true) {
             System.out.print(prompt);
             String linha = scanner.nextLine().trim();
-            try {
-                return Integer.parseInt(linha);
-            } catch (NumberFormatException e) {
-                System.out.println("  [!] Entrada invalida. Digite um numero inteiro.");
-            }
+            try { return Integer.parseInt(linha); } 
+            catch (NumberFormatException e) { System.out.println("  [!] Entrada invalida."); }
         }
     }
 
@@ -58,15 +49,11 @@ public class Contexto {
         while (true) {
             System.out.print(prompt);
             String linha = scanner.nextLine().trim();
-            try {
-                return Double.parseDouble(linha.replace(",", "."));
-            } catch (NumberFormatException e) {
-                System.out.println("  [!] Entrada invalida. Digite um numero decimal.");
-            }
+            try { return Double.parseDouble(linha.replace(",", ".")); } 
+            catch (NumberFormatException e) { System.out.println("  [!] Entrada invalida."); }
         }
     }
 
-    /** Lê os 6 campos de um Endereco interativamente. */
     public Endereco lerEndereco() {
         System.out.println("  --- Endereco ---");
         String logradouro   = lerLinha("    Logradouro : ");
@@ -78,105 +65,76 @@ public class Contexto {
         return new Endereco(logradouro, numero, cidade, bairro, cep, complemento);
     }
 
-    // ─── Helpers de seleção de entidades ─────────────────────────────────────
-
     public Curso selecionarCurso() {
         if (cursos.isEmpty()) { System.out.println("  [!] Nenhum curso cadastrado."); return null; }
-        System.out.println("  Cursos disponíveis:");
         for (int i = 0; i < cursos.size(); i++) {
-            Curso c = cursos.get(i);
-            System.out.printf("    [%d] %s (%s)%n", i + 1, c.getNome(), c.getCodigo());
+            System.out.printf("    [%d] %s (%s)%n", i + 1, cursos.get(i).getNome(), cursos.get(i).getCodigo());
         }
-        int idx = lerInt("  Escolha (numero): ");
+        int idx = lerInt("  Escolha: ");
         if (idx < 1 || idx > cursos.size()) { System.out.println("  [!] Opcao invalida."); return null; }
         return cursos.get(idx - 1);
     }
 
     public Aluno selecionarAluno() {
-        if (alunos.isEmpty()) { System.out.println("  [!] Nenhum aluno cadastrado."); return null; }
-        System.out.println("  Alunos disponíveis:");
+        if (alunos.isEmpty()) { System.out.println("  [!] Nenhum aluno."); return null; }
         for (int i = 0; i < alunos.size(); i++) {
-            Aluno a = alunos.get(i);
-            System.out.printf("    [%d] %s %s — Matricula: %s — Status: %s%n",
-                    i + 1, a.getNome(), a.getSobrenome(), a.getMatricula(), a.getStatus());
+            System.out.printf("    [%d] %s %s - %s%n", i + 1, alunos.get(i).getNome(), alunos.get(i).getSobrenome(), alunos.get(i).getMatricula());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > alunos.size()) { System.out.println("  [!] Opcao invalida."); return null; }
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > alunos.size()) return null;
         return alunos.get(idx - 1);
     }
 
     public Professor selecionarProfessor() {
-        if (professores.isEmpty()) { System.out.println("  [!] Nenhum professor cadastrado."); return null; }
-        System.out.println("  Professores disponíveis:");
+        if (professores.isEmpty()) { System.out.println("  [!] Nenhum professor."); return null; }
         for (int i = 0; i < professores.size(); i++) {
-            Professor p = professores.get(i);
-            System.out.printf("    [%d] %s %s — Codigo: %s%n",
-                    i + 1, p.getNome(), p.getSobrenome(), p.getCodigo());
+            System.out.printf("    [%d] %s %s - %s%n", i + 1, professores.get(i).getNome(), professores.get(i).getSobrenome(), professores.get(i).getCodigo());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > professores.size()) { System.out.println("  [!] Opcao invalida."); return null; }
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > professores.size()) return null;
         return professores.get(idx - 1);
     }
 
     public Disciplina selecionarDisciplina() {
-        if (disciplinas.isEmpty()) { System.out.println("  [!] Nenhuma disciplina cadastrada."); return null; }
-        System.out.println("  Disciplinas disponíveis:");
+        if (disciplinas.isEmpty()) { System.out.println("  [!] Nenhuma disciplina."); return null; }
         for (int i = 0; i < disciplinas.size(); i++) {
-            Disciplina d = disciplinas.get(i);
-            System.out.printf("    [%d] %s (%s) — Curso: %s%n",
-                    i + 1, d.getNome(), d.getCodigo(), d.getCurso().getNome());
+            System.out.printf("    [%d] %s (%s)%n", i + 1, disciplinas.get(i).getNome(), disciplinas.get(i).getCodigo());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > disciplinas.size()) { System.out.println("  [!] Opcao invalida."); return null; }
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > disciplinas.size()) return null;
         return disciplinas.get(idx - 1);
     }
 
     public Curriculo selecionarCurriculo() {
-        List<Curriculo> lista = secretariaAtiva.getCurriculos();
-        if (lista.isEmpty()) { System.out.println("  [!] Nenhum curriculo cadastrado."); return null; }
-        System.out.println("  Curriculos disponíveis:");
-        for (int i = 0; i < lista.size(); i++) {
-            Curriculo c = lista.get(i);
-            System.out.printf("    [%d] %s — Periodo: %s%n",
-                    i + 1, c.getSemestre(), c.isPeriodoMatriculaAberto() ? "ABERTO" : "FECHADO");
+        if (curriculos.isEmpty()) { System.out.println("  [!] Nenhum curriculo."); return null; }
+        for (int i = 0; i < curriculos.size(); i++) {
+            System.out.printf("    [%d] Semestre: %s%n", i + 1, curriculos.get(i).getSemestre());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > lista.size()) { System.out.println("  [!] Opcao invalida."); return null; }
-        return lista.get(idx - 1);
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > curriculos.size()) return null;
+        return curriculos.get(idx - 1);
     }
 
     public Turma selecionarTurma() {
-        if (turmas.isEmpty()) { System.out.println("  [!] Nenhuma turma cadastrada."); return null; }
-        System.out.println("  Turmas disponíveis:");
+        if (turmas.isEmpty()) { System.out.println("  [!] Nenhuma turma."); return null; }
         for (int i = 0; i < turmas.size(); i++) {
-            Turma t = turmas.get(i);
-            System.out.printf("    [%d] %s — %s — Semestre: %s — %s%n",
-                    i + 1, t.getCodigo(), t.getDisciplina().getNome(),
-                    t.getCurriculo().getSemestre(),
-                    t.isAtiva() ? "ATIVA" : "INATIVA");
+            System.out.printf("    [%d] %s - %s%n", i + 1, turmas.get(i).getCodigo(), turmas.get(i).getDisciplina().getNome());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > turmas.size()) { System.out.println("  [!] Opcao invalida."); return null; }
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > turmas.size()) return null;
         return turmas.get(idx - 1);
     }
 
     public Inscricao selecionarInscricaoAtiva(Aluno aluno) {
         List<Inscricao> ativas = aluno.getInscricoesAtivas();
-        if (ativas.isEmpty()) { System.out.println("  [!] Aluno nao possui inscricoes ativas."); return null; }
-        System.out.println("  Inscricoes ativas:");
+        if (ativas.isEmpty()) { System.out.println("  [!] Nenhuma inscricao ativa."); return null; }
         for (int i = 0; i < ativas.size(); i++) {
-            Inscricao ins = ativas.get(i);
-            System.out.printf("    [%d] Turma: %s — Disciplina: %s — Tipo: %s%n",
-                    i + 1, ins.getTurma().getCodigo(),
-                    ins.getTurma().getDisciplina().getNome(),
-                    ins.getTipoInscricao());
+            System.out.printf("    [%d] %s - %s%n", i + 1, ativas.get(i).getTurma().getCodigo(), ativas.get(i).getTurma().getDisciplina().getNome());
         }
-        int idx = lerInt("  Escolha (numero): ");
-        if (idx < 1 || idx > ativas.size()) { System.out.println("  [!] Opcao invalida."); return null; }
+        int idx = lerInt("  Escolha: ");
+        if (idx < 1 || idx > ativas.size()) return null;
         return ativas.get(idx - 1);
     }
-
-    // ─── Utilitários de exibição ──────────────────────────────────────────────
 
     public void pausar() {
         System.out.print("\n  Pressione ENTER para continuar...");
@@ -184,8 +142,8 @@ public class Contexto {
     }
 
     public void imprimirSeparador(String titulo) {
-        System.out.println("\n╔══════════════════════════════════════════════╗");
-        System.out.printf ("║  %-44s ║%n", titulo);
-        System.out.println("╚══════════════════════════════════════════════╝");
+        System.out.println("\n------------------------------------------------");
+        System.out.printf ("  %s%n", titulo);
+        System.out.println("------------------------------------------------");
     }
 }

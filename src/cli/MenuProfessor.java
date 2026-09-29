@@ -1,5 +1,7 @@
+package cli;
+import domain.*;
 /**
- * Sub-menu de operações relacionadas a Professores.
+ * Sub-menu de operaÃ§Ãµes relacionadas a Professores.
  */
 public class MenuProfessor {
 
@@ -34,7 +36,7 @@ public class MenuProfessor {
         }
     }
 
-    // ─── Ações ───────────────────────────────────────────────────────────────
+    // â”€â”€â”€ AÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void cadastrarProfessor() {
         ctx.imprimirSeparador("CADASTRAR PROFESSOR");
@@ -106,7 +108,7 @@ public class MenuProfessor {
         java.util.List<Turma> turmasDoProfessor = professor.getTurmas();
         for (int i = 0; i < turmasDoProfessor.size(); i++) {
             Turma t = turmasDoProfessor.get(i);
-            System.out.printf("    [%d] %s — %s%n", i + 1, t.getCodigo(), t.getDisciplina().getNome());
+            System.out.printf("    [%d] %s â€” %s%n", i + 1, t.getCodigo(), t.getDisciplina().getNome());
         }
         int idx = ctx.lerInt("  Escolha a turma (numero): ");
         if (idx < 1 || idx > turmasDoProfessor.size()) {
@@ -130,3 +132,4 @@ public class MenuProfessor {
         }
     }
 }
+

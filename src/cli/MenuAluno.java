@@ -1,5 +1,7 @@
+package cli;
+import domain.*;
 /**
- * Sub-menu de operações relacionadas a Alunos.
+ * Sub-menu de operaÃ§Ãµes relacionadas a Alunos.
  */
 public class MenuAluno {
 
@@ -34,7 +36,7 @@ public class MenuAluno {
         }
     }
 
-    // ─── Ações ───────────────────────────────────────────────────────────────
+    // â”€â”€â”€ AÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void cadastrarAluno() {
         ctx.imprimirSeparador("CADASTRAR ALUNO");
@@ -139,3 +141,4 @@ public class MenuAluno {
         }
     }
 }
+

@@ -1,6 +1,8 @@
+package cli;
+import domain.*;
 /**
- * Menu raiz da aplicação CLI.
- * Roteia a entrada do usuário para os sub-menus especializados.
+ * Menu raiz da aplicaÃ§Ã£o CLI.
+ * Roteia a entrada do usuÃ¡rio para os sub-menus especializados.
  */
 public class MenuPrincipal {
 
@@ -40,19 +42,20 @@ public class MenuPrincipal {
 
     private void exibirMenu() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════════════════╗");
-        System.out.println("║              MENU PRINCIPAL                  ║");
-        System.out.println("╠══════════════════════════════════════════════╣");
-        System.out.println("║  [1] Gerenciar Cursos                        ║");
-        System.out.println("║  [2] Gerenciar Disciplinas                   ║");
-        System.out.println("║  [3] Gerenciar Curriculos / Periodo          ║");
-        System.out.println("║  [4] Gerenciar Secretaria                    ║");
-        System.out.println("║  [5] Gerenciar Professores                   ║");
-        System.out.println("║  [6] Gerenciar Alunos                        ║");
-        System.out.println("║  [7] Gerenciar Turmas                        ║");
-        System.out.println("║  [8] Matriculas e Cancelamentos              ║");
-        System.out.println("║  [9] Historico e Cobrancas                   ║");
-        System.out.println("║  [0] Sair                                    ║");
-        System.out.println("╚══════════════════════════════════════════════╝");
+        System.out.println("â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—");
+        System.out.println("â•‘              MENU PRINCIPAL                  â•‘");
+        System.out.println("â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£");
+        System.out.println("â•‘  [1] Gerenciar Cursos                        â•‘");
+        System.out.println("â•‘  [2] Gerenciar Disciplinas                   â•‘");
+        System.out.println("â•‘  [3] Gerenciar Curriculos / Periodo          â•‘");
+        System.out.println("â•‘  [4] Gerenciar Secretaria                    â•‘");
+        System.out.println("â•‘  [5] Gerenciar Professores                   â•‘");
+        System.out.println("â•‘  [6] Gerenciar Alunos                        â•‘");
+        System.out.println("â•‘  [7] Gerenciar Turmas                        â•‘");
+        System.out.println("â•‘  [8] Matriculas e Cancelamentos              â•‘");
+        System.out.println("â•‘  [9] Historico e Cobrancas                   â•‘");
+        System.out.println("â•‘  [0] Sair                                    â•‘");
+        System.out.println("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
     }
 }
+
