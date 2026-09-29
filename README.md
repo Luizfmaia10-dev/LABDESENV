@@ -101,11 +101,85 @@ Clique no link para ver o [diagrama de classes](docs/DiagramaDeClasse/class-diag
 
 ---
 
+## 🚀 Como Rodar a Aplicação
+
+> **Pré-requisito:** JDK 17 ou superior instalado e disponível no PATH.
+
+### Passo 1 — Compilar
+
+Na raiz do repositório, execute no PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Path build -Force | Out-Null
+javac -encoding UTF-8 --release 17 -d build (Get-ChildItem -LiteralPath src -Filter '*.java' | ForEach-Object { $_.FullName })
+```
+
+### Passo 2 — Executar
+
+```powershell
+java -cp build Main
+```
+
+**Na primeira execução**, o sistema detecta automaticamente que não há dados cadastrados e abre um assistente de configuração inicial para criar a conta da Secretaria:
+
+```
+*** PRIMEIRA EXECUCAO ***
+Nenhum dado encontrado. Vamos configurar a conta da Secretaria.
+A Secretaria podera cadastrar professores, alunos e disciplinas depois.
+
+Cargo da secretaria (ex: Atendimento Geral): _
+Email corporativo: _
+Senha: _
+Endereco: ...
+```
+
+Após criar a conta, faça login como Secretaria e cadastre cursos, professores, alunos e turmas pelo menu interativo.
+
+Os dados são salvos automaticamente ao sair (`opção 0` no menu principal) no diretório `data/`.
+
+---
+
+### Rodar apenas os testes automatizados
+
+```powershell
+./tests/run-tests.ps1
+```
+
+---
+
+### Popular com dados de demonstração (opcional)
+
+Se quiser começar com um conjunto de dados já prontos em vez de cadastrar tudo manualmente:
+
+```powershell
+java -cp build SeedDados
+```
+
+Isso cria os seguintes dados de teste:
+
+| Perfil     | Email             | Senha    |
+|------------|-------------------|----------|
+| Secretaria | secretaria@uni.br | senha123 |
+| Professor  | professor@uni.br  | senha123 |
+| Aluno 1    | ana@uni.br        | senha123 |
+| Aluno 2    | bruno@uni.br      | senha123 |
+
+Turmas disponíveis no semestre `2026/2` (período de matrícula aberto):
+
+| Código | Disciplina               | Créditos |
+|--------|--------------------------|----------|
+| ALG-01 | Algoritmos               | 4        |
+| BD-01  | Banco de Dados           | 4        |
+| REQ-01 | Engenharia de Requisitos | 4        |
+| IA-01  | Inteligência Artificial  | 2        |
+
+---
+
 ## 🛠️ Tecnologias e Modelagem
 
-* **Linguagem:** Java
+* **Linguagem:** Java 17
 * **Interface:** Linha de Comando (CLI)
-* **Persistência:** Manipulação e gravação em arquivos
+* **Persistência:** Arquivos CSV em `data/` (gerados automaticamente)
 * **Modelagem de Software:** Diagramas de Casos de Uso, Histórias de Usuário e Diagramas de Classes (UML)
 
 ---
@@ -113,9 +187,17 @@ Clique no link para ver o [diagrama de classes](docs/DiagramaDeClasse/class-diag
 ## 📂 Estrutura do Repositório
 
 ```text
-├── docs/                 # Modelos UML, diagramas e histórias de usuário
-├── src/                  # Código-fonte da aplicação Java
-└── README.md             # Documentação principal
+├── data/                      # Arquivos CSV de persistência (gerados em runtime)
+├── docs/                      # Modelos UML, diagramas e histórias de usuário
+├── src/                       # Código-fonte da aplicação Java
+│   ├── Main.java              # Ponto de entrada da CLI
+│   ├── SeedDados.java         # Script de dados iniciais de teste
+│   ├── GerenciadorDados.java  # Coordenador de persistência
+│   └── ...                    # Demais classes de domínio e repositórios
+├── tests/                     # Testes automatizados
+│   ├── ModeloTest.java
+│   └── run-tests.ps1
+└── README.md                  # Documentação principal
 ```
 
 ---
