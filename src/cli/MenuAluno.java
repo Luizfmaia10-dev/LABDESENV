@@ -60,6 +60,7 @@ public class MenuAluno {
         String sobrenome = ctx.lerLinha("  Sobrenome        : ");
         Endereco end    = ctx.lerEndereco();
         try {
+            if (!ctx.dados.emailDisponivel(email, null)) throw new IllegalArgumentException("Email ja cadastrado");
             Aluno aluno = new Aluno(matricula, status, curso, ctx.secretariaAtiva, email, senha, end);
             aluno.setNome(nome);
             aluno.setSobrenome(sobrenome);

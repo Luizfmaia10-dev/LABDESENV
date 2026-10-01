@@ -1,32 +1,35 @@
 package domain;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.HexFormat;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public abstract class Usuario extends Pessoa {
-    private final UUID idUsuario = UUID.randomUUID();
+    private static final int ITERACOES_HASH = 120_000;
+    private static final int TAMANHO_SALT = 16;
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private final UUID idUsuario;
     private String emailCorporativo;
-    // O atributo guarda um resumo com salt, nunca a senha original.
     private String senha;
 
     protected Usuario(String emailCorporativo, String senha, Endereco endereco) {
         super(validarCadastro(emailCorporativo, senha, endereco));
-        this.emailCorporativo = emailCorporativo;
-        this.senha = resumo(senha);
+        this.idUsuario = UUID.randomUUID();
+        this.emailCorporativo = normalizarEmail(emailCorporativo);
+        this.senha = gerarHash(senha);
     }
 
-    /**
-     * Construtor de reconstrucao â€” uso exclusivo da camada de persistencia (Subsistema 6).
-     * Recebe o hash da senha diretamente (ja foi hasheado em sessao anterior) em vez
-     * de re-hashear com o novo UUID, o que geraria um hash diferente do gravado.
-     */
-    protected Usuario(String emailCorporativo, String senhaHashPronta, Endereco endereco,
-                      boolean reconstrucao) {
-        super(validarCadastro(emailCorporativo, senhaHashPronta, endereco));
-        this.emailCorporativo = emailCorporativo;
-        this.senha = senhaHashPronta; // ja e um hash, nao hashear novamente
+    protected Usuario(String emailCorporativo, String senhaHashPronta, Endereco endereco, UUID idUsuario) {
+        super(Objects.requireNonNull(idUsuario), validarCadastro(emailCorporativo, senhaHashPronta, endereco));
+        this.idUsuario = idUsuario;
+        this.emailCorporativo = normalizarEmail(emailCorporativo);
+        this.senha = Objects.requireNonNull(senhaHashPronta);
     }
 
     /** Acesso ao hash da senha para serializacao. Uso exclusivo da camada de persistencia. */
@@ -39,29 +42,62 @@ public abstract class Usuario extends Pessoa {
         return Objects.requireNonNull(endereco, "Endereco obrigatorio");
     }
 
-    private String resumo(String valor) {
+    private static String normalizarEmail(String email) {
+        if (email == null || email.isBlank()) throw new IllegalArgumentException("Email obrigatorio");
+        return email.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static String gerarHash(String valor) {
+        byte[] salt = new byte[TAMANHO_SALT];
+        RANDOM.nextBytes(salt);
+        return "pbkdf2$" + ITERACOES_HASH + "$" + HexFormat.of().formatHex(salt)
+                + "$" + HexFormat.of().formatHex(calcularHash(valor, salt, ITERACOES_HASH));
+    }
+
+    private static byte[] calcularHash(String valor, byte[] salt, int iteracoes) {
         try {
-            byte[] hash = MessageDigest.getInstance("SHA-256")
-                    .digest((idUsuario + ":" + valor).getBytes(StandardCharsets.UTF_8));
-            return java.util.HexFormat.of().formatHex(hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-256 indisponivel", e);
+            PBEKeySpec spec = new PBEKeySpec(valor.toCharArray(), salt, iteracoes, 256);
+            try {
+                return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+                        .generateSecret(spec).getEncoded();
+            } finally {
+                spec.clearPassword();
+            }
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("PBKDF2 indisponivel", e);
+        }
+    }
+
+    private boolean validarHashAtual(String valor) {
+        if (!senha.startsWith("pbkdf2$")) {
+            byte[] legado = MessageDigestHolder.sha256((idUsuario + ":" + valor).getBytes(StandardCharsets.UTF_8));
+            return MessageDigest.isEqual(senha.getBytes(StandardCharsets.UTF_8),
+                    HexFormat.of().formatHex(legado).getBytes(StandardCharsets.UTF_8));
+        }
+        try {
+            String[] partes = senha.split("\\$", -1);
+            if (partes.length != 4) return false;
+            int iteracoes = Integer.parseInt(partes[1]);
+            byte[] salt = HexFormat.of().parseHex(partes[2]);
+            byte[] hashSalvo = HexFormat.of().parseHex(partes[3]);
+            return MessageDigest.isEqual(hashSalvo, calcularHash(valor, salt, iteracoes));
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 
     public UUID getIdUsuario() { return idUsuario; }
     public String getEmailCorporativo() { return emailCorporativo; }
     public void setEmailCorporativo(String emailCorporativo) {
-        if (emailCorporativo == null || emailCorporativo.isBlank()) {
-            throw new IllegalArgumentException("Email corporativo obrigatorio");
-        }
-        this.emailCorporativo = emailCorporativo;
+        this.emailCorporativo = normalizarEmail(emailCorporativo);
     }
 
     public boolean autenticar(String emailCorporativo, String senha) {
-        return this.emailCorporativo.equals(emailCorporativo) && senha != null
-                && MessageDigest.isEqual(this.senha.getBytes(StandardCharsets.UTF_8),
-                        resumo(senha).getBytes(StandardCharsets.UTF_8));
+        if (emailCorporativo == null || senha == null
+                || !this.emailCorporativo.equals(emailCorporativo.trim().toLowerCase(Locale.ROOT))) return false;
+        if (!validarHashAtual(senha)) return false;
+        if (!this.senha.startsWith("pbkdf2$")) this.senha = gerarHash(senha);
+        return true;
     }
 
     public void alterarSenha(String senhaAtual, String novaSenha) {
@@ -71,7 +107,17 @@ public abstract class Usuario extends Pessoa {
         if (novaSenha == null || novaSenha.isBlank()) {
             throw new IllegalArgumentException("Nova senha obrigatoria");
         }
-        senha = resumo(novaSenha);
+        senha = gerarHash(novaSenha);
+    }
+
+    private static final class MessageDigestHolder {
+        private static byte[] sha256(byte[] valor) {
+            try {
+                return MessageDigest.getInstance("SHA-256").digest(valor);
+            } catch (java.security.NoSuchAlgorithmException e) {
+                throw new IllegalStateException("SHA-256 indisponivel", e);
+            }
+        }
     }
 }
 

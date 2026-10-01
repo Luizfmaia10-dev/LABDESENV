@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.List;
+import domain.*;
 
 /** Testes de comportamento, executados sem bibliotecas externas. */
 public class ModeloTest {
@@ -42,6 +43,7 @@ public class ModeloTest {
 
     public static void main(String[] args) {
         credenciaisEEndereco();
+        identidadeCentralizada();
         relacionamentosEHistorico();
         limitesDoAluno();
         limitesDaTurma();
@@ -57,6 +59,8 @@ public class ModeloTest {
         Cenario c = new Cenario();
         Aluno a = c.aluno("A1");
         verificar(a.autenticar("A1@universidade.br", "senha"), "Autenticacao valida");
+        verificar(a.autenticar(" A1@UNIVERSIDADE.BR ", "senha"), "Email normalizado no login");
+        verificar(a.getEmailCorporativo().equals("a1@universidade.br"), "Email canonico no cadastro");
         verificar(!a.autenticar("A1@universidade.br", "errada"), "Senha incorreta");
         rejeitar(() -> a.alterarSenha("errada", "nova"));
         a.alterarSenha("senha", "nova");
@@ -71,6 +75,24 @@ public class ModeloTest {
         verificar(Endereco.buscarEnderecoPeloCEP("30100000", List.of(novo)).orElseThrow() == novo,
                 "Busca local normaliza CEP");
     }
+
+        private static void identidadeCentralizada() {
+        Cenario c = new Cenario();
+        Aluno aluno = c.aluno("A1");
+        GerenciadorDados dados = new GerenciadorDados();
+        dados.getSecretarias().add(c.secretaria);
+        dados.getProfessores().add(c.professor);
+        dados.getAlunos().add(aluno);
+        verificar(dados.buscarUsuarioPorEmail(" A1@UNIVERSIDADE.BR ") == aluno,
+            "Login centralizado encontra perfil sem diferenciar caixa");
+        verificar(!dados.emailDisponivel("A1@UNIVERSIDADE.BR", null), "Email globalmente reservado");
+        verificar(dados.emailDisponivel(aluno.getEmailCorporativo(), aluno), "Usuario pode manter o proprio email");
+        verificar(dados.emailDisponivel("novo@universidade.br", null), "Email novo disponivel");
+        Professor duplicado = new Professor("P2", c.secretaria, aluno.getEmailCorporativo(), "senha", endereco());
+        dados.getProfessores().add(duplicado);
+        verificar(dados.buscarUsuarioPorEmail(aluno.getEmailCorporativo()) == null,
+            "Login rejeita identidades ambiguas");
+        }
 
     private static void relacionamentosEHistorico() {
         Cenario c = new Cenario();

@@ -46,6 +46,7 @@ public final class Main {
                 String cargo = sc.nextLine().trim();
                 System.out.print("Email corporativo: ");
                 String email = sc.nextLine().trim();
+                if (!dados.emailDisponivel(email, null)) throw new IllegalArgumentException("Email ja cadastrado");
                 System.out.print("Senha: ");
                 String senha = sc.nextLine().trim();
 
@@ -74,27 +75,19 @@ public final class Main {
         System.out.print("Senha: ");
         String senha = sc.nextLine().trim();
 
-        Aluno aluno = dados.buscarAlunoPorEmail(email);
-        if (aluno != null && aluno.autenticar(email, senha)) {
-            Contexto ctx = new Contexto(dados);
-            ctx.alunoAtivo = aluno;
-            new PortalAluno(ctx).executar();
-            return;
-        }
-
-        Professor prof = dados.buscarProfessorPorEmail(email);
-        if (prof != null && prof.autenticar(email, senha)) {
-            Contexto ctx = new Contexto(dados);
-            ctx.professorAtivo = prof;
-            new PortalProfessor(ctx).executar();
-            return;
-        }
-
-        Secretaria sec = dados.buscarSecretariaPorEmail(email);
-        if (sec != null && sec.autenticar(email, senha)) {
-            Contexto ctx = new Contexto(dados);
-            ctx.secretariaAtiva = sec;
-            new MenuPrincipal(ctx).executar();
+        Usuario usuario = dados.buscarUsuarioPorEmail(email);
+        if (usuario != null && usuario.autenticar(email, senha)) {
+            Contexto ctx = new Contexto(dados, sc);
+            if (usuario instanceof Aluno aluno) {
+                ctx.alunoAtivo = aluno;
+                new PortalAluno(ctx).executar();
+            } else if (usuario instanceof Professor professor) {
+                ctx.professorAtivo = professor;
+                new PortalProfessor(ctx).executar();
+            } else if (usuario instanceof Secretaria secretaria) {
+                ctx.secretariaAtiva = secretaria;
+                new MenuPrincipal(ctx).executar();
+            }
             return;
         }
 

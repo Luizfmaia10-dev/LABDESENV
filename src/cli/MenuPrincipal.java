@@ -34,6 +34,7 @@ public class MenuPrincipal {
                 case 7  -> menuSecretaria.menuTurmas();
                 case 8  -> menuSecretaria.menuMatriculas();
                 case 9  -> menuSecretaria.menuHistoricoCobranca();
+                case 10 -> new MenuConta(ctx).executar(ctx.secretariaAtiva);
                 case 0  -> continuar = false;
                 default -> System.out.println("  [!] Opcao invalida. Tente novamente.");
             }
@@ -54,6 +55,7 @@ public class MenuPrincipal {
         System.out.println("â•‘  [7] Gerenciar Turmas                        â•‘");
         System.out.println("â•‘  [8] Matriculas e Cancelamentos              â•‘");
         System.out.println("â•‘  [9] Historico e Cobrancas                   â•‘");
+        System.out.println("â•‘  [10] Minha conta                            â•‘");
         System.out.println("â•‘  [0] Sair                                    â•‘");
         System.out.println("â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•");
     }

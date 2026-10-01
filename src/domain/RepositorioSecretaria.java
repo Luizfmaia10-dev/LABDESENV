@@ -25,7 +25,7 @@ public final class RepositorioSecretaria extends RepositorioArquivo<Secretaria> 
         if (c.length < 10) return null;
         Endereco end = new Endereco(c[4], c[5], c[6], c[7], c[8], c[9]);
         // Usa construtor de reconstrucao com hash ja pronto
-        Secretaria s = new Secretaria(c[1], c[2], c[3], end, true);
+        Secretaria s = new Secretaria(c[1], c[2], c[3], end, java.util.UUID.fromString(c[0]));
         ctx.put(c[0], s);
         return s;
     }

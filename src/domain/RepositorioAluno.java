@@ -31,7 +31,7 @@ public final class RepositorioAluno extends RepositorioArquivo<Aluno> {
         if (curso == null || sec == null) return null;
         Endereco end = new Endereco(c[7], c[8], c[9], c[10], c[11], c[12]);
         StatusMatricula status = StatusMatricula.valueOf(c[2]);
-        Aluno a = new Aluno(c[1], status, curso, sec, c[5], c[6], end, true);
+        Aluno a = new Aluno(c[1], status, curso, sec, c[5], c[6], end, java.util.UUID.fromString(c[0]));
         ctx.put(c[0], a);
         ctx.put(c[1], a); // indexado tambem pela matricula
         return a;

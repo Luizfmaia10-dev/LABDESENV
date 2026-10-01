@@ -66,6 +66,9 @@ public class MenuSecretaria {
         ctx.imprimirSeparador("ALTERAR EMAIL");
         String email = ctx.lerLinha("  Novo email: ");
         try {
+            if (!ctx.dados.emailDisponivel(email, ctx.secretariaAtiva)) {
+                throw new IllegalArgumentException("Email ja cadastrado");
+            }
             ctx.secretariaAtiva.setEmailCorporativo(email);
             System.out.println("  [OK] Email atualizado.");
         } catch (Exception e) {
@@ -430,7 +433,7 @@ public class MenuSecretaria {
         int tipoOpcao = ctx.lerInt("  Escolha: ");
         TipoInscricao tipo = tipoOpcao == 2 ? TipoInscricao.OPTATIVA : TipoInscricao.OBRIGATORIA;
         try {
-            aluno.matricular(turma, tipo, ctx.servicoCobranca);
+            ctx.matricular(aluno, turma, tipo);
             System.out.println("  [OK] Aluno " + aluno.getMatricula() +
                     " matriculado na turma " + turma.getCodigo() + " como " + tipo + ".");
         } catch (Exception e) {

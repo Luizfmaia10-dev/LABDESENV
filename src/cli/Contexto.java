@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Contexto {
 
-    public final Scanner scanner = new Scanner(System.in);
+    public final Scanner scanner;
     public final GerenciadorDados dados;
 
     public final List<Curso>       cursos;
@@ -21,7 +21,12 @@ public class Contexto {
     public Aluno alunoAtivo;
 
     public Contexto(GerenciadorDados dados) {
+        this(dados, new Scanner(System.in));
+    }
+
+    public Contexto(GerenciadorDados dados, Scanner scanner) {
         this.dados = dados;
+        this.scanner = scanner;
         this.cursos = dados.getCursos();
         this.alunos = dados.getAlunos();
         this.professores = dados.getProfessores();
@@ -43,6 +48,12 @@ public class Contexto {
             try { return Integer.parseInt(linha); } 
             catch (NumberFormatException e) { System.out.println("  [!] Entrada invalida."); }
         }
+    }
+
+    public Inscricao matricular(Aluno aluno, Turma turma, TipoInscricao tipo) {
+        Inscricao inscricao = aluno.matricular(turma, tipo, servicoCobranca);
+        dados.getInscricoes().add(inscricao);
+        return inscricao;
     }
 
     public double lerDouble(String prompt) {

@@ -9,7 +9,7 @@ public final class Inscricao {
     private boolean isAtiva;
     private final Aluno aluno;
     private final Turma turma;
-    private final ServicoCobranca servicoCobranca;
+    private ServicoCobranca servicoCobranca;
 
     /**
      * Construtor de reconstrucao â€” uso exclusivo da camada de persistencia (Subsistema 6).
@@ -48,6 +48,10 @@ public final class Inscricao {
     public Aluno getAluno() { return aluno; }
     public Turma getTurma() { return turma; }
 
+    void vincularServicoCobranca(ServicoCobranca servicoCobranca) {
+        this.servicoCobranca = Objects.requireNonNull(servicoCobranca);
+    }
+
     public void setAtiva(boolean ativa) {
         if (ativa == isAtiva) return;
         if (!ativa) {
@@ -67,7 +71,7 @@ public final class Inscricao {
 
     /** Nome preservado conforme o diagrama fornecido. */
     public void enviarNotificaoAoSistemaCobranca() {
-        servicoCobranca.notificarInscricoes(this);
+        if (servicoCobranca != null) servicoCobranca.notificarInscricoes(this);
     }
 }
 

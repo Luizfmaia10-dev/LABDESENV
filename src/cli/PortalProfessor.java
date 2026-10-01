@@ -15,12 +15,14 @@ public class PortalProfessor {
             ctx.imprimirSeparador("PORTAL DO PROFESSOR - " + ctx.professorAtivo.getCodigo());
             System.out.println("  [1] Listar minhas turmas");
             System.out.println("  [2] Consultar alunos matriculados em uma turma");
+            System.out.println("  [3] Minha conta");
             System.out.println("  [0] Sair");
             int opcao = ctx.lerInt("  Opcao: ");
             System.out.println();
             switch (opcao) {
                 case 1 -> listarTurmas();
                 case 2 -> consultarAlunosPorTurma();
+                case 3 -> new MenuConta(ctx).executar(ctx.professorAtivo);
                 case 0 -> continuar = false;
                 default -> System.out.println("  [!] Opcao invalida.");
             }

@@ -27,7 +27,7 @@ public final class RepositorioProfessor extends RepositorioArquivo<Professor> {
         Secretaria sec = (Secretaria) ctx.get(c[2]);
         if (sec == null) return null;
         Endereco end = new Endereco(c[5], c[6], c[7], c[8], c[9], c[10]);
-        Professor p = new Professor(c[1], sec, c[3], c[4], end, true);
+        Professor p = new Professor(c[1], sec, c[3], c[4], end, java.util.UUID.fromString(c[0]));
         ctx.put(c[0], p);
         return p;
     }

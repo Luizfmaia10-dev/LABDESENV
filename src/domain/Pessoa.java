@@ -39,6 +39,11 @@ public abstract class Pessoa {
         this.telefone = telefone;
         this.email = email;
     }
+
+    protected Pessoa(UUID id, Endereco endereco) {
+        this(id, null, null, null, null, null, endereco);
+    }
+
     private static Endereco validarId(UUID id, Endereco endereco) {
         java.util.Objects.requireNonNull(id, "Id obrigatorio");
         return endereco;

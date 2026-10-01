@@ -20,8 +20,8 @@ public final class Secretaria extends Usuario {
 
     /** Construtor de reconstrucao â€” uso exclusivo da camada de persistencia (Subsistema 6). */
     Secretaria(String cargo, String emailCorporativo, String senhaHash, Endereco endereco,
-               boolean reconstrucao) {
-        super(emailCorporativo, senhaHash, validarDados(cargo, endereco), true);
+             java.util.UUID idUsuario) {
+         super(emailCorporativo, senhaHash, validarDados(cargo, endereco), idUsuario);
         this.cargo = Objects.requireNonNull(cargo);
     }
 

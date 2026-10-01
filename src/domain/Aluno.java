@@ -26,8 +26,8 @@ public final class Aluno extends Usuario {
 
     /** Construtor de reconstrucao â€” uso exclusivo da camada de persistencia (Subsistema 6). */
     Aluno(String matricula, StatusMatricula status, Curso curso, Secretaria secretaria,
-          String emailCorporativo, String senhaHash, Endereco endereco, boolean reconstrucao) {
-        super(emailCorporativo, senhaHash, validarDados(matricula, status, curso, secretaria, endereco), true);
+                    String emailCorporativo, String senhaHash, Endereco endereco, java.util.UUID idUsuario) {
+                super(emailCorporativo, senhaHash, validarDados(matricula, status, curso, secretaria, endereco), idUsuario);
         this.matricula = Objects.requireNonNull(matricula);
         this.status = Objects.requireNonNull(status);
         this.curso = Objects.requireNonNull(curso, "Curso obrigatorio");

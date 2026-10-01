@@ -19,8 +19,8 @@ public final class Professor extends Usuario {
 
     /** Construtor de reconstrucao â€” uso exclusivo da camada de persistencia (Subsistema 6). */
     Professor(String codigo, Secretaria secretaria, String emailCorporativo,
-              String senhaHash, Endereco endereco, boolean reconstrucao) {
-        super(emailCorporativo, senhaHash, validarDados(codigo, secretaria, endereco), true);
+              String senhaHash, Endereco endereco, java.util.UUID idUsuario) {
+          super(emailCorporativo, senhaHash, validarDados(codigo, secretaria, endereco), idUsuario);
         this.codigo = Objects.requireNonNull(codigo);
         this.secretaria = Objects.requireNonNull(secretaria, "Secretaria obrigatoria");
         secretaria.registrarProfessor(this);

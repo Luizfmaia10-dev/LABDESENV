@@ -111,7 +111,7 @@ Na raiz do repositório, execute no PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Path build -Force | Out-Null
-javac -encoding UTF-8 --release 17 -d build (Get-ChildItem -LiteralPath src -Filter '*.java' | ForEach-Object { $_.FullName })
+javac -encoding UTF-8 --release 17 -d build (Get-ChildItem -LiteralPath src -Recurse -Filter '*.java' | ForEach-Object { $_.FullName })
 ```
 
 ### Passo 2 — Executar

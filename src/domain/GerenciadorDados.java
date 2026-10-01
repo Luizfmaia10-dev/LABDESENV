@@ -88,6 +88,7 @@ public final class GerenciadorDados {
         // TabelaPrecos e ServicoCobranca â€” reconstruidos com valores zerados se nao houver dados
         this.tabelaPrecos = new TabelaPrecos(0.0, 0.0);
         this.servicoCobranca = new ServicoCobranca(tabelaPrecos);
+        inscricoes.forEach(inscricao -> inscricao.vincularServicoCobranca(servicoCobranca));
     }
 
     // -------------------------------------------------------------------------
@@ -131,21 +132,44 @@ public final class GerenciadorDados {
     // -------------------------------------------------------------------------
 
     public Aluno buscarAlunoPorEmail(String email) {
+        if (email == null) return null;
         return alunos.stream()
-                .filter(a -> a.getEmailCorporativo().equalsIgnoreCase(email))
+                .filter(a -> a.getEmailCorporativo().equalsIgnoreCase(email.trim()))
                 .findFirst().orElse(null);
     }
 
     public Professor buscarProfessorPorEmail(String email) {
+        if (email == null) return null;
         return professores.stream()
-                .filter(p -> p.getEmailCorporativo().equalsIgnoreCase(email))
+                .filter(p -> p.getEmailCorporativo().equalsIgnoreCase(email.trim()))
                 .findFirst().orElse(null);
     }
 
     public Secretaria buscarSecretariaPorEmail(String email) {
+        if (email == null) return null;
         return secretarias.stream()
-                .filter(s -> s.getEmailCorporativo().equalsIgnoreCase(email))
+                .filter(s -> s.getEmailCorporativo().equalsIgnoreCase(email.trim()))
                 .findFirst().orElse(null);
+    }
+
+    public Usuario buscarUsuarioPorEmail(String email) {
+        if (email == null || email.isBlank()) return null;
+        List<Usuario> correspondencias = new ArrayList<>();
+        secretarias.stream().filter(u -> u.getEmailCorporativo().equalsIgnoreCase(email.trim()))
+                .forEach(correspondencias::add);
+        professores.stream().filter(u -> u.getEmailCorporativo().equalsIgnoreCase(email.trim()))
+                .forEach(correspondencias::add);
+        alunos.stream().filter(u -> u.getEmailCorporativo().equalsIgnoreCase(email.trim()))
+                .forEach(correspondencias::add);
+        return correspondencias.size() == 1 ? correspondencias.get(0) : null;
+    }
+
+    public boolean emailDisponivel(String email, Usuario ignorar) {
+        if (email == null || email.isBlank()) return false;
+        return java.util.stream.Stream.of(secretarias, professores, alunos)
+                .flatMap(List::stream)
+                .noneMatch(usuario -> usuario != ignorar
+                        && usuario.getEmailCorporativo().equalsIgnoreCase(email.trim()));
     }
 
     public List<Turma> getTurmasPorCurriculo(Curriculo curriculo) {
